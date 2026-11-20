@@ -1,0 +1,7 @@
+# Advanced course board API with login (install: pip install -r requirements.txt)
+# NOTE: keep this file ASCII-only. pip on Korean Windows may fail to read non-ASCII text.
+fastapi==0.162.2            # web API framework
+uvicorn[standard]==0.54.0   # server that runs FastAPI
+psycopg[binary]==3.3.8      # PostgreSQL driver
+PyJWT==2.15.1               # JWT login token (new in advanced course)
+pwdlib[argon2]==0.4.2       # password hashing with Argon2 (new in advanced course)

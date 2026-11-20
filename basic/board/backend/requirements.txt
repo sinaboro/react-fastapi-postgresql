@@ -1,0 +1,5 @@
+# Basic course board API (install: pip install -r requirements.txt)
+# NOTE: keep this file ASCII-only. pip on Korean Windows may fail to read non-ASCII text.
+fastapi==0.162.2            # web API framework
+uvicorn[standard]==0.54.0   # server that runs FastAPI
+psycopg[binary]==3.3.8      # PostgreSQL driver
