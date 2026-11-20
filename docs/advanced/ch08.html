@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8장. 프로젝트 ② FastAPI 회원가입·로그인 API - 2단계 React 심화</title>
+<meta name="description" content="React 를 처음 배우는 학생을 위한 2단계(기초 · 심화) 학습 교안과 실습 코드입니다. 하나의 게시판을 기초 과정에서 만들고, 심화 과정에서 Router · Context · 로그인(JWT)을 더해 키워 갑니다.">
+<meta property="og:title" content="8장. 프로젝트 ② FastAPI 회원가입·로그인 API - 2단계 React 심화"><meta property="og:description" content="React 를 처음 배우는 학생을 위한 2단계(기초 · 심화) 학습 교안과 실습 코드입니다. 하나의 게시판을 기초 과정에서 만들고, 심화 과정에서 Router · Context · 로그인(JWT)을 더해 키워 갑니다."><meta property="og:image" content="https://sinaboro.github.io/react-fastapi-postgresql/images/a9_list_guest.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-12 -12 24 24'%3E%3Cg fill='none' stroke='%2361dafb' stroke-width='1.6'%3E%3Cellipse rx='10' ry='4'/%3E%3Cellipse rx='10' ry='4' transform='rotate(60)'/%3E%3Cellipse rx='10' ry='4' transform='rotate(120)'/%3E%3C/g%3E%3Ccircle r='2' fill='%2361dafb'/%3E%3C/svg%3E">
+<script>
+if(/KAKAOTALK/i.test(navigator.userAgent)){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href);}
+</script>
+<style>
+:root{--ink:#1f2328;--sub:#59636e;--line:#e3e6ea;--bg:#f7f8fa;--card:#fff;--navy:#16202e;--acc:#61dafb;--acc2:#0b7fab;
+--note:#eef8fc;--noteline:#61dafb;--code:#f3f5f7;--link:#0969da}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e6edf3;--sub:#9da7b3;--line:#30363d;--bg:#0f141a;
+--card:#161b22;--navy:#0b1017;--note:#10232b;--noteline:#2a8fb0;--code:#1b222b;--link:#58a6ff;--acc2:#61dafb}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 "Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;word-break:keep-all}
+a{color:var(--link)}img{max-width:100%;height:auto}
+header.top{background:var(--navy);color:#fff;position:sticky;top:0;z-index:5}
+header.top .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;gap:10px;align-items:center}
+header.top a{color:#fff;text-decoration:none}.logo{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.logo b{color:var(--acc)}
+header.top .sp{flex:1}header.top .btn{font-size:14px;border:1px solid #ffffff55;border-radius:8px;padding:4px 10px;white-space:nowrap}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.doc{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;padding:24px 16px 60px;max-width:1180px;margin:0 auto}
+.side{position:sticky;top:64px;align-self:start;max-height:calc(100vh - 80px);overflow:auto;font-size:14px}
+.side .cap{font-weight:800;margin:4px 10px 6px;color:var(--sub)}
+.side a{display:block;padding:5px 10px;border-radius:6px;color:var(--ink);text-decoration:none;line-height:1.45}
+.side a.on{background:var(--acc);color:#111;font-weight:700}.side a:hover:not(.on){background:var(--line)}
+.side .other{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+article{min-width:0}
+article h1{font-size:28px;line-height:1.35;margin:0 0 20px;padding-bottom:12px;border-bottom:4px solid var(--acc)}
+article h2{font-size:22px;margin:40px 0 12px;padding-left:10px;border-left:5px solid var(--acc2)}
+article h3{font-size:18px;margin:28px 0 8px}
+figure{margin:18px 0;text-align:center}figure img{border:1px solid var(--line);border-radius:8px;background:#fff}
+figcaption{font-size:13px;color:var(--sub);margin-top:6px}
+.tbl{overflow-x:auto;margin:14px 0}table{border-collapse:collapse;width:100%;font-size:15px}
+th{background:var(--navy);color:#fff;text-align:left}th,td{padding:7px 10px;border:1px solid var(--line);vertical-align:top}
+blockquote.note{margin:16px 0;padding:10px 16px;background:var(--note);border-left:5px solid var(--noteline);border-radius:6px}
+blockquote.note p{margin:6px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-family:Consolas,"D2Coding",monospace;font-size:.92em}
+.file{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:18px 0 -6px;padding:6px 12px;
+background:var(--navy);color:#dfe6ee;border-radius:8px 8px 0 0;font:13px Consolas,monospace}
+.file a{color:var(--acc);font-family:inherit;white-space:nowrap}.file span{overflow-wrap:anywhere}
+.file+pre{border-top-left-radius:0;border-top-right-radius:0;margin-top:6px}
+pre{position:relative;background:var(--code);padding:34px 14px 12px;border-radius:8px;overflow-x:auto;border:1px solid var(--line)}
+pre code{background:none;padding:0;font-size:14px;line-height:1.55}
+pre code.hljs{padding:0;background:none}
+.copy{position:absolute;top:6px;right:6px;font-size:12px;padding:3px 9px;border-radius:6px;border:1px solid var(--line);
+background:var(--card);color:var(--ink);cursor:pointer;opacity:.85}.copy:hover{opacity:1}.copy.ok{background:#2da44e;color:#fff;border-color:#2da44e}
+.pager{display:flex;gap:12px;justify-content:space-between;margin-top:48px;padding-top:20px;border-top:1px solid var(--line)}
+.pager a{flex:1;padding:12px 14px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);background:var(--card)}
+.pager a small{display:block;color:var(--sub)}.pager .next{text-align:right}
+select.jump{display:none;width:100%;font-size:16px;padding:8px;margin-bottom:12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+@media (max-width:860px){.doc{display:block;padding-top:16px}.side{display:none}select.jump{display:block}article h1{font-size:23px}
+header.top .hide-s{display:none}}
+.hero{background:var(--navy);color:#fff;padding:44px 0 36px}
+.hero h1{font-size:38px;margin:0 0 10px;line-height:1.25}.hero h1 b{color:var(--acc)}
+.hero p{margin:6px 0;color:#c9d4e0;max-width:760px}.hero .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.cta a{padding:11px 18px;border-radius:10px;text-decoration:none;font-weight:700}
+.cta .main{background:var(--acc);color:#111}.cta .sub{border:1px solid #ffffff66;color:#fff}
+.hero .twin{margin-top:16px;font-size:14px}.hero .twin a{color:var(--acc)}
+section{padding:36px 0 8px}section h2{font-size:24px;margin:0 0 6px}section .lead{color:var(--sub);margin:0 0 18px}
+.course{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px}
+.course>div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.course h3{margin:0 0 4px;font-size:21px}.course .pdf{font-size:14px}
+.course ol{list-style:none;padding:0;margin:12px 0 0}
+.course li a{display:flex;gap:10px;align-items:center;padding:6px 8px;border-radius:8px;text-decoration:none;color:var(--ink)}
+.course li a:hover{background:var(--line)}
+.course li img{width:72px;height:44px;object-fit:cover;object-position:left top;border:1px solid var(--line);border-radius:5px;background:#fff;flex:none}
+.course li .noimg{width:72px;height:44px;border-radius:5px;background:var(--code);flex:none}
+.dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.dl a{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;text-decoration:none;color:var(--ink)}
+.dl a:hover{border-color:var(--acc)}.dl b{font-family:Consolas,monospace}.dl small{display:block;color:var(--sub)}
+footer{padding:40px 0 50px;color:var(--sub);font-size:14px;text-align:center}
+@media (max-width:600px){.hero h1{font-size:28px}.course{grid-template-columns:1fr}}
+</style></head><body>
+<header class="top"><div class="in">
+<a class="logo" href="../index.html">React + <b>FastAPI</b></a><span class="sp"></span>
+<a class="btn hide-s" href="../basic/ch00.html">기초</a>
+<a class="btn hide-s" href="../advanced/ch00.html">심화</a>
+<a class="btn" href="../index.html#pdf">PDF</a>
+<a class="btn" href="https://github.com/sinaboro/react-fastapi-postgresql" target="_blank">GitHub</a>
+</div></header>
+<div class="doc">
+<nav class="side"><div class="cap">2단계 React 심화</div><a href="ch00.html">0장 과정 안내</a><a href="ch01.html">1장 기초 복습 - 다시 그리기와 컴포넌트 설계</a><a href="ch02.html">2장 useRef 와 useReducer</a><a href="ch03.html">3장 커스텀 훅</a><a href="ch04.html">4장 React Router</a><a href="ch05.html">5장 Context API</a><a href="ch06.html">6장 인증의 이해 - 해시, JWT, 401 과 403</a><a href="ch07.html">7장 프로젝트 ① 게시판을 Router 로 바꾸기</a><a href="ch08.html" class=on>8장 프로젝트 ② FastAPI 회원가입·로그인 API</a><a href="ch09.html">9장 프로젝트 ③ React 로그인 연동</a><a href="appA.html">부록 A 자주 만나는 오류와 해결</a><a href="appB.html">부록 B 용어 풀이</a><a href="appC.html">부록 C 확인 문제 풀이</a><div class="other"><a href="../basic/ch00.html">→ 1단계 React 기초</a></div></nav>
+<article>
+<select class="jump" onchange="location.href=this.value" aria-label="장 이동"><option value="ch00.html">0장 과정 안내</option><option value="ch01.html">1장 기초 복습 - 다시 그리기와 컴포넌트 설계</option><option value="ch02.html">2장 useRef 와 useReducer</option><option value="ch03.html">3장 커스텀 훅</option><option value="ch04.html">4장 React Router</option><option value="ch05.html">5장 Context API</option><option value="ch06.html">6장 인증의 이해 - 해시, JWT, 401 과 403</option><option value="ch07.html">7장 프로젝트 ① 게시판을 Router 로 바꾸기</option><option value="ch08.html" selected>8장 프로젝트 ② FastAPI 회원가입·로그인 API</option><option value="ch09.html">9장 프로젝트 ③ React 로그인 연동</option><option value="appA.html">부록 A 자주 만나는 오류와 해결</option><option value="appB.html">부록 B 용어 풀이</option><option value="appC.html">부록 C 확인 문제 풀이</option></select>
+<h1 id="8장-프로젝트-②-fastapi-회원가입로그인-api">8장. 프로젝트 ② FastAPI 회원가입·로그인 API</h1>
+<h2 id="학습-목표">학습 목표</h2>
+<ul>
+<li>users 테이블을 만들고 posts 와 외래 키(FK)로 잇는다.</li>
+<li>회원가입(비밀번호 해시 저장)과 로그인(JWT 발급) API 를 만든다.</li>
+<li><code>Depends</code> 로 "토큰 검사 → 현재 사용자" 의존성을 만들어 여러 API 에 붙인다.</li>
+<li>글쓴이 본인만 수정·삭제하도록 403 소유권 검사를 넣는다.</li>
+<li><code>/docs</code> 의 <strong>Authorize</strong> 로 토큰을 넣어 API 를 시험한다.</li>
+</ul>
+<h2 id="8-1-무엇이-바뀌나">8-1. 무엇이 바뀌나</h2>
+<p><strong>데이터베이스</strong> - 사용자 표가 생기고, 글은 작성자 <strong>이름(글자)</strong> 대신 작성자 <strong>번호(user_id)</strong> 를 가진다.</p>
+<figure><a href="../images/fig_erd.png" target="_blank"><img src="../images/fig_erd.png" alt="users 와 posts 의 관계" loading="lazy"></a><figcaption>users 와 posts 의 관계</figcaption></figure>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>기초 과정</th>
+<th>심화 과정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>작성자</td>
+<td>글쓰기 폼에서 아무 이름이나 입력 (<code>writer</code>)</td>
+<td>로그인한 사람 (토큰에서 알아냄)</td>
+</tr>
+<tr>
+<td>글쓰기</td>
+<td>누구나</td>
+<td>로그인한 사람만 (아니면 401)</td>
+</tr>
+<tr>
+<td>수정·삭제</td>
+<td>누구나</td>
+<td>글쓴이 본인만 (아니면 403)</td>
+</tr>
+<tr>
+<td>DB</td>
+<td><code>board</code> (포트 5433)</td>
+<td><code>authboard</code> (포트 5434)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>API</strong> - 인증 API 3개가 늘고, 글 API 에 로그인 확인이 붙는다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>주소</th>
+<th>방식</th>
+<th>로그인</th>
+<th>하는 일</th>
+<th>성공</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/api/auth/signup</code></td>
+<td>POST</td>
+<td>-</td>
+<td>회원가입</td>
+<td>201</td>
+</tr>
+<tr>
+<td><code>/api/auth/login</code></td>
+<td>POST</td>
+<td>-</td>
+<td>로그인 → 토큰</td>
+<td>200</td>
+</tr>
+<tr>
+<td><code>/api/auth/me</code></td>
+<td>GET</td>
+<td>필요</td>
+<td>토큰 주인 정보</td>
+<td>200</td>
+</tr>
+<tr>
+<td><code>/api/posts</code></td>
+<td>GET</td>
+<td>-</td>
+<td>목록 (<code>?user_id=3</code> 이면 그 사람 글만)</td>
+<td>200</td>
+</tr>
+<tr>
+<td><code>/api/posts/{id}</code></td>
+<td>GET</td>
+<td>-</td>
+<td>글 하나</td>
+<td>200</td>
+</tr>
+<tr>
+<td><code>/api/posts</code></td>
+<td>POST</td>
+<td>필요</td>
+<td>글쓰기</td>
+<td>201</td>
+</tr>
+<tr>
+<td><code>/api/posts/{id}</code></td>
+<td>PUT</td>
+<td>본인</td>
+<td>수정</td>
+<td>200</td>
+</tr>
+<tr>
+<td><code>/api/posts/{id}</code></td>
+<td>DELETE</td>
+<td>본인</td>
+<td>삭제</td>
+<td>204</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="8-2-준비---db-켜기">8-2. 준비 - DB 켜기</h2>
+<p>6장에서 <code>C:\study\authboard</code> 에 <code>docker-compose.yml</code> 과 <code>backend</code> 를 복사하고 가상환경까지 만들었다. (안 했다면 6-5 의 명령을 먼저 실행한다.)</p>
+<div class="file"><span>📄 advanced/board/docker-compose.yml</span><a href="https://github.com/sinaboro/react-fastapi-postgresql/blob/main/advanced/board/docker-compose.yml" target="_blank">GitHub 에서 보기</a></div>
+
+<pre><code class="language-yaml"># =====================================================================
+# 심화 과정 8~9장 - 로그인 게시판 데이터베이스 (PostgreSQL 18)
+#
+#   시작        : docker compose up -d        (이 파일이 있는 폴더에서)
+#   상태 확인   : docker compose ps           (STATUS 가 healthy 이면 준비 완료)
+#   멈추기      : docker compose stop         (데이터는 남는다)
+#   완전히 지우기: docker compose down -v      (컨테이너 + 데이터 볼륨 삭제, 되돌릴 수 없음)
+#
+# 접속 정보
+#   호스트 localhost / 포트 5434 / DB authboard / 사용자 postgres / 비밀번호 postgres
+#   ※ 기초 과정 DB(5433, react-board-db)와 따로 쓴다. 테이블 구조(users 추가)가 달라서
+#     기초 과정 글과 섞이지 않게 하려는 것. 두 DB 를 동시에 켜 두어도 포트가 달라 괜찮다.
+# =====================================================================
+
+# 프로젝트 이름. 적지 않으면 &quot;폴더 이름&quot;(board)이 프로젝트 이름이 되는데,
+# 기초·심화 두 과정의 폴더 이름이 모두 board 라서 서로를 같은 프로젝트로 보고
+# 한쪽을 켜면 다른 쪽 컨테이너를 지워 버린다. 이름을 따로 붙여 이 문제를 막는다.
+name: react-auth-board
+
+services:
+  db:
+    image: postgres:18
+    container_name: react-auth-db
+    restart: unless-stopped
+    ports:
+      - &quot;5434:5432&quot;                   # 내 PC 5434 → 컨테이너 5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres     # 실습용 비밀번호
+      POSTGRES_DB: authboard
+      TZ: Asia/Seoul
+    command: [&quot;postgres&quot;, &quot;-c&quot;, &quot;timezone=Asia/Seoul&quot;]
+    volumes:
+      - authboard_data:/var/lib/postgresql
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -U postgres -d authboard&quot;]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  authboard_data:
+</code></pre>
+<p><strong>[PS]</strong></p>
+<pre><code class="language-powershell">cd C:\study\authboard
+docker compose up -d
+docker compose ps
+</code></pre>
+<p><code>react-auth-db</code> 가 <code>(healthy)</code> 이면 준비 끝. 기초 과정 DB(react-board-db, 5433)와 <strong>동시에 켜 두어도</strong> 포트와 프로젝트 이름이 달라 괜찮다.</p>
+<div class="file"><span>📄 advanced/board/backend/requirements.txt</span><a href="https://github.com/sinaboro/react-fastapi-postgresql/blob/main/advanced/board/backend/requirements.txt" target="_blank">GitHub 에서 보기</a></div>
+
+<pre><code class="language-text"># Advanced course board API with login (install: pip install -r requirements.txt)
+# NOTE: keep this file ASCII-only. pip on Korean Windows may fail to read non-ASCII text.
+fastapi==0.162.2            # web API framework
+uvicorn[standard]==0.54.0   # server that runs FastAPI
+psycopg[binary]==3.3.8      # PostgreSQL driver
+PyJWT==2.15.1               # JWT login token (new in advanced course)
+pwdlib[argon2]==0.4.2       # password hashing with Argon2 (new in advanced course)
+</code></pre>
+<h2 id="8-3-securitypy---해시와-토큰-도구">8-3. security.py - 해시와 토큰 도구</h2>
+<p>6장에서 실험한 두 가지를 서버에서 쓰기 좋게 함수로 만든다.</p>
+<div class="file"><span>📄 advanced/board/backend/security.py</span><a href="https://github.com/sinaboro/react-fastapi-postgresql/blob/main/advanced/board/backend/security.py" target="_blank">GitHub 에서 보기</a></div>
+
+<pre><code class="language-python">&quot;&quot;&quot;security.py - 비밀번호 해시와 JWT 토큰 (로그인의 핵심 도구 두 가지)
+
+이 파일이 보여 주는 것
+  1. 비밀번호는 절대 그대로 저장하지 않는다 → &quot;해시&quot; 로 바꿔 저장한다.
+     - 해시: 한쪽 방향으로만 바뀌는 변환. 해시값으로 원래 비밀번호를 알아낼 수 없다.
+     - 로그인할 때는 입력한 비밀번호를 같은 방식으로 바꿔 저장된 해시와 &quot;비교&quot; 만 한다.
+     - Argon2 는 일부러 느리고 매번 다른 소금(salt)을 섞어서, 같은 비밀번호도 해시가 매번 다르다.
+  2. 로그인에 성공하면 JWT(JSON Web Token) 를 발급한다.
+     - 토큰 안에 &quot;누구인지(sub)&quot; 와 &quot;언제까지 유효한지(exp)&quot; 를 적고 SECRET_KEY 로 서명한다.
+     - 서버는 토큰을 따로 저장하지 않는다. 서명만 검사하면 위조 여부를 알 수 있다.
+     - 토큰 내용은 누구나 읽을 수 있다(암호화가 아님). 그래서 비밀번호 같은 것은 넣지 않는다.
+&quot;&quot;&quot;
+import os
+from datetime import datetime, timedelta, timezone
+
+import jwt
+from pwdlib import PasswordHash
+
+# ------------------------------------------------------------------ 설정
+# SECRET_KEY: 토큰 서명에 쓰는 비밀 열쇠. 이 값이 새면 누구나 토큰을 위조할 수 있다.
+#   실제 서비스에서는 환경 변수로 넣고 코드에 적지 않는다. (실습이라 기본값을 둔다)
+#   만들기: python -c &quot;import secrets; print(secrets.token_hex(32))&quot;
+SECRET_KEY = os.getenv(&quot;SECRET_KEY&quot;, &quot;dev-only-secret-change-me-0123456789abcdef&quot;)
+ALGORITHM = &quot;HS256&quot;                                   # 서명 방식 (비밀 열쇠 하나로 서명·검사)
+ACCESS_TOKEN_MINUTES = int(os.getenv(&quot;ACCESS_TOKEN_MINUTES&quot;, &quot;60&quot;))  # 토큰 유효 시간(분)
+
+password_hash = PasswordHash.recommended()            # 권장 설정의 Argon2
+
+
+# ------------------------------------------------------------------ 비밀번호
+def hash_password(plain: str) -&gt; str:
+    &quot;&quot;&quot;'secret123' → '$argon2id$v=19$m=65536,...' 같은 해시 문자열&quot;&quot;&quot;
+    return password_hash.hash(plain)
+
+
+def verify_password(plain: str, hashed: str) -&gt; bool:
+    &quot;&quot;&quot;입력한 비밀번호가 저장된 해시와 맞는지 검사 (맞으면 True)&quot;&quot;&quot;
+    return password_hash.verify(plain, hashed)
+
+
+# ------------------------------------------------------------------ JWT
+def create_access_token(user_id: int) -&gt; str:
+    &quot;&quot;&quot;사용자 번호를 담은 토큰을 만든다.&quot;&quot;&quot;
+    now = datetime.now(timezone.utc)
+    payload = {
+        &quot;sub&quot;: str(user_id),                          # subject: 이 토큰의 주인 (문자열로 넣는 것이 규칙)
+        &quot;iat&quot;: now,                                   # issued at: 발급 시각
+        &quot;exp&quot;: now + timedelta(minutes=ACCESS_TOKEN_MINUTES),  # expiration: 만료 시각
+    }
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def decode_access_token(token: str) -&gt; int | None:
+    &quot;&quot;&quot;토큰을 검사해 사용자 번호를 돌려준다. 위조됐거나 만료됐으면 None.&quot;&quot;&quot;
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])  # 서명·만료를 함께 검사
+        return int(payload[&quot;sub&quot;])
+    except (jwt.InvalidTokenError, KeyError, ValueError):
+        # ExpiredSignatureError(만료), InvalidSignatureError(위조) 등이 모두 InvalidTokenError 의 한 종류
+        return None
+</code></pre>
+<blockquote class="note">
+<p><strong>SECRET_KEY 는 비밀이다.</strong> 이 값을 아는 사람은 누구의 토큰이든 만들 수 있다. 실제 서비스에서는 코드에 적지 않고 환경 변수로 넣으며, GitHub 에 올리지 않는다. 주석의 명령으로 무작위 값을 만들 수 있다.</p>
+</blockquote>
+<h2 id="8-4-dbpy---users-테이블과-join">8-4. db.py - users 테이블과 JOIN</h2>
+<div class="file"><span>📄 advanced/board/backend/db.py</span><a href="https://github.com/sinaboro/react-fastapi-postgresql/blob/main/advanced/board/backend/db.py" target="_blank">GitHub 에서 보기</a></div>
+
+<pre><code class="language-python">&quot;&quot;&quot;db.py - PostgreSQL 에 SQL 을 보내는 함수 모음 (users + posts 두 테이블)
+
+기초 과정 db.py 와 달라진 점
+  - users 테이블이 생겼다 (아이디, 비밀번호 해시, 닉네임)
+  - posts 에 writer(작성자 이름 글자) 대신 user_id(누가 썼는지 번호)가 들어간다.
+      posts.user_id → users.id  를 가리키는 외래 키(FOREIGN KEY)
+      → 없는 사용자 번호로는 글을 쓸 수 없고, 사용자를 지우면 그 사람 글도 함께 지워진다(ON DELETE CASCADE)
+  - 글을 읽을 때 users 와 JOIN 해서 작성자 닉네임(writer)을 함께 돌려준다.
+  - 수정·삭제 SQL 에 &quot;AND user_id = %s&quot; 는 넣지 않았다. 소유권 검사는 main.py 에서 먼저 하고
+    403(권한 없음)과 404(없는 글)를 구분해서 알려 주기 위해서다.
+&quot;&quot;&quot;
+import os
+
+import psycopg
+from psycopg.rows import dict_row
+
+DATABASE_URL = os.getenv(&quot;DATABASE_URL&quot;, &quot;postgresql://postgres:postgres@localhost:5434/authboard&quot;)
+
+
+def connect():
+    &quot;&quot;&quot;DB 연결 하나. with 블록이 끝나면 자동 commit(오류면 rollback) 후 닫힌다.&quot;&quot;&quot;
+    return psycopg.connect(DATABASE_URL, row_factory=dict_row)
+
+
+def init_db():
+    &quot;&quot;&quot;테이블이 없으면 만든다 (서버 시작 때 한 번).&quot;&quot;&quot;
+    with connect() as conn:
+        conn.execute(
+            &quot;&quot;&quot;
+            CREATE TABLE IF NOT EXISTS users (
+                id             SERIAL PRIMARY KEY,
+                username       VARCHAR(30)  NOT NULL UNIQUE,      -- 로그인 아이디 (중복 불가)
+                password_hash  VARCHAR(255) NOT NULL,             -- 비밀번호가 아니라 &quot;해시&quot; 를 저장
+                nickname       VARCHAR(30)  NOT NULL,             -- 화면에 보일 이름
+                created_at     TIMESTAMPTZ  NOT NULL DEFAULT now()
+            )
+            &quot;&quot;&quot;
+        )
+        conn.execute(
+            &quot;&quot;&quot;
+            CREATE TABLE IF NOT EXISTS posts (
+                id          SERIAL PRIMARY KEY,
+                user_id     INTEGER      NOT NULL REFERENCES users(id) ON DELETE CASCADE,  -- 쓴 사람
+                title       VARCHAR(100) NOT NULL,
+                content     TEXT         NOT NULL DEFAULT '',
+                created_at  TIMESTAMPTZ  NOT NULL DEFAULT now(),
+                updated_at  TIMESTAMPTZ  NOT NULL DEFAULT now()
+            )
+            &quot;&quot;&quot;
+        )
+
+
+# ================================================================== users
+def create_user(username, password_hash, nickname):
+    &quot;&quot;&quot;회원 저장. 아이디가 이미 있으면 None (UNIQUE 위반을 잡아서).&quot;&quot;&quot;
+    try:
+        with connect() as conn:
+            return conn.execute(
+                &quot;&quot;&quot;
+                INSERT INTO users (username, password_hash, nickname) VALUES (%s, %s, %s)
+                RETURNING id, username, nickname
+                &quot;&quot;&quot;,
+                (username, password_hash, nickname),
+            ).fetchone()
+    except psycopg.errors.UniqueViolation:
+        return None
+
+
+def get_user_by_username(username):
+    &quot;&quot;&quot;로그인할 때: 아이디로 회원 찾기 (비밀번호 해시 포함).&quot;&quot;&quot;
+    with connect() as conn:
+        return conn.execute(
+            &quot;SELECT id, username, nickname, password_hash FROM users WHERE username = %s&quot;, (username,)
+        ).fetchone()
+
+
+def get_user(user_id):
+    &quot;&quot;&quot;토큰 검사 후: 번호로 회원 찾기 (비밀번호 해시는 꺼내지 않는다).&quot;&quot;&quot;
+    with connect() as conn:
+        return conn.execute(&quot;SELECT id, username, nickname FROM users WHERE id = %s&quot;, (user_id,)).fetchone()
+
+
+# ================================================================== posts
+# 글과 작성자 닉네임을 함께 꺼내는 SELECT. u.nickname 을 writer 라는 이름으로 돌려준다
+#   → 기초 과정 화면에서 쓰던 post.writer 를 그대로 쓸 수 있다
+POST_SELECT = &quot;&quot;&quot;
+    SELECT p.id, p.user_id, u.nickname AS writer, p.title, p.content, p.created_at, p.updated_at
+      FROM posts p
+      JOIN users u ON u.id = p.user_id
+&quot;&quot;&quot;
+
+
+def list_posts(user_id=None):
+    &quot;&quot;&quot;글 목록. user_id 를 주면 그 사람 글만 (&quot;내 글&quot; 보기).&quot;&quot;&quot;
+    with connect() as conn:
+        if user_id is None:
+            return conn.execute(POST_SELECT + &quot; ORDER BY p.id DESC&quot;).fetchall()
+        return conn.execute(POST_SELECT + &quot; WHERE p.user_id = %s ORDER BY p.id DESC&quot;, (user_id,)).fetchall()
+
+
+def get_post(post_id):
+    with connect() as conn:
+        return conn.execute(POST_SELECT + &quot; WHERE p.id = %s&quot;, (post_id,)).fetchone()
+
+
+def create_post(user_id, title, content):
+    &quot;&quot;&quot;새 글 저장 후, 닉네임까지 붙은 모양으로 다시 읽어 돌려준다.&quot;&quot;&quot;
+    with connect() as conn:
+        new_id = conn.execute(
+            &quot;INSERT INTO posts (user_id, title, content) VALUES (%s, %s, %s) RETURNING id&quot;,
+            (user_id, title, content),
+        ).fetchone()[&quot;id&quot;]
+    return get_post(new_id)  # with 블록이 끝나 commit 된 뒤에 읽는다
+
+
+def update_post(post_id, title, content):
+    with connect() as conn:
+        conn.execute(
+            &quot;UPDATE posts SET title = %s, content = %s, updated_at = now() WHERE id = %s&quot;,
+            (title, content, post_id),
+        )
+    return get_post(post_id)
+
+
+def delete_post(post_id):
+    with connect() as conn:
+        conn.execute(&quot;DELETE FROM posts WHERE id = %s&quot;, (post_id,))
+</code></pre>
+<ul>
+<li><code>REFERENCES users(id) ON DELETE CASCADE</code> - posts.user_id 는 반드시 users 에 있는 번호여야 하고, 사용자가 지워지면 그 사람 글도 함께 지워진다.</li>
+<li><code>JOIN users u ON u.id = p.user_id</code> 로 닉네임을 붙여 <code>writer</code> 라는 이름으로 돌려준다. 그래서 React 쪽 <code>post.writer</code> 코드를 거의 고치지 않아도 된다.</li>
+<li>아이디가 겹치면 PostgreSQL 이 <code>UNIQUE</code> 위반 오류를 낸다. <code>create_user</code> 가 이를 잡아 <code>None</code> 을 돌려주고, main.py 가 <strong>409</strong> 로 바꾼다.</li>
+</ul>
+<h2 id="8-5-mainpy---인증-api-와-소유권-검사">8-5. main.py - 인증 API 와 소유권 검사</h2>
+<div class="file"><span>📄 advanced/board/backend/main.py</span><a href="https://github.com/sinaboro/react-fastapi-postgresql/blob/main/advanced/board/backend/main.py" target="_blank">GitHub 에서 보기</a></div>
+
+<pre><code class="language-python">&quot;&quot;&quot;main.py - 로그인 게시판 REST API 서버 (FastAPI + JWT)
+
+기초 과정 main.py 에 더해진 것
+  - 회원가입 / 로그인 / 내 정보 API
+  - get_current_user : 요청 헤더의 토큰을 검사해 &quot;지금 요청한 사람&quot; 을 알아내는 의존성(Depends)
+  - 글쓰기·수정·삭제는 로그인한 사람만 (토큰이 없거나 틀리면 401)
+  - 수정·삭제는 글쓴이 본인만 (남의 글이면 403)
+
+  주소                       방식     로그인   하는 일
+  /api/auth/signup           POST     -        회원가입 (201)
+  /api/auth/login            POST     -        로그인 → 토큰 발급
+  /api/auth/me               GET      필요     토큰 주인의 정보
+  /api/posts                 GET      -        글 목록 (?user_id=3 이면 그 사람 글만)
+  /api/posts/{post_id}       GET      -        글 하나
+  /api/posts                 POST     필요     새 글 (작성자 = 토큰 주인)
+  /api/posts/{post_id}       PUT      본인     글 수정
+  /api/posts/{post_id}       DELETE   본인     글 삭제 (204)
+
+  상태 코드 정리
+    401 Unauthorized : &quot;누구세요?&quot; - 로그인 안 했거나 토큰이 만료/위조됨 → 다시 로그인해야 함
+    403 Forbidden    : &quot;당신은 알지만 안 됩니다&quot; - 로그인은 했지만 남의 글
+    404 Not Found    : 그런 글 없음
+    409 Conflict     : 이미 있는 아이디로 가입
+
+실행: uvicorn main:app --reload   (backend 폴더, 가상환경 켠 상태)  →  http://localhost:8000/docs
+&quot;&quot;&quot;
+from contextlib import asynccontextmanager
+from datetime import datetime
+from typing import Annotated
+
+from fastapi import Depends, FastAPI, HTTPException, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import BaseModel, Field
+
+import db
+import security
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    db.init_db()
+    yield
+
+
+app = FastAPI(title=&quot;React 게시판 API (심화: 로그인)&quot;, lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[&quot;http://localhost:5173&quot;, &quot;http://127.0.0.1:5173&quot;],
+    allow_methods=[&quot;*&quot;],
+    allow_headers=[&quot;*&quot;],  # Authorization 헤더도 허락해야 토큰을 보낼 수 있다
+)
+
+
+# ================================================================== 데이터 모양
+class SignupIn(BaseModel):
+    # pattern: 영문 소문자·숫자·밑줄만 4~20자 (정규 표현식)
+    username: str = Field(min_length=4, max_length=20, pattern=r&quot;^[a-z0-9_]+$&quot;)
+    password: str = Field(min_length=8, max_length=72)
+    nickname: str = Field(min_length=1, max_length=30)
+
+
+class LoginIn(BaseModel):
+    username: str
+    password: str
+
+
+class UserOut(BaseModel):
+    id: int
+    username: str
+    nickname: str
+
+
+class TokenOut(BaseModel):
+    access_token: str
+    token_type: str = &quot;bearer&quot;
+    user: UserOut  # 로그인하자마자 화면에 닉네임을 보여 줄 수 있게 함께 돌려준다
+
+
+class PostIn(BaseModel):
+    # 작성자(writer)는 더 이상 입력받지 않는다 → 토큰 주인이 작성자. (남의 이름으로 글쓰기 불가)
+    title: str = Field(min_length=1, max_length=100)
+    content: str = &quot;&quot;
+
+
+class PostOut(BaseModel):
+    id: int
+    user_id: int
+    writer: str
+    title: str
+    content: str
+    created_at: datetime
+    updated_at: datetime
+
+
+# ================================================================== 로그인 확인 (의존성)
+# HTTPBearer: 요청 헤더 &quot;Authorization: Bearer &lt;토큰&gt;&quot; 에서 토큰을 꺼내 준다.
+#   auto_error=False → 헤더가 없어도 FastAPI 가 바로 오류를 내지 않고 None 을 준다
+#   (아래에서 우리가 고른 한국어 401 메시지를 돌려주려고)
+bearer = HTTPBearer(auto_error=False)
+
+
+def get_current_user(cred: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]):
+    &quot;&quot;&quot;토큰을 검사해 사용자(딕셔너리)를 돌려준다. 문제가 있으면 401.
+
+    API 함수의 매개변수에 user: CurrentUser 라고 쓰기만 하면,
+    FastAPI 가 그 함수보다 &quot;먼저&quot; 이 함수를 실행해 결과를 넣어 준다. (의존성 주입)
+    &quot;&quot;&quot;
+    if cred is None:
+        raise HTTPException(status_code=401, detail=&quot;로그인이 필요합니다&quot;)
+    user_id = security.decode_access_token(cred.credentials)
+    user = db.get_user(user_id) if user_id else None  # 탈퇴 등으로 사용자가 없어졌을 수도 있다
+    if user is None:
+        raise HTTPException(status_code=401, detail=&quot;로그인이 만료되었습니다. 다시 로그인하세요&quot;)
+    return user
+
+
+CurrentUser = Annotated[dict, Depends(get_current_user)]  # 자주 쓰므로 짧은 이름을 붙여 둔다
+
+
+def find_post_or_404(post_id: int):
+    post = db.get_post(post_id)
+    if post is None:
+        raise HTTPException(status_code=404, detail=&quot;글을 찾을 수 없습니다&quot;)
+    return post
+
+
+def check_owner(post: dict, user: dict):
+    &quot;&quot;&quot;글쓴이 본인이 아니면 403.&quot;&quot;&quot;
+    if post[&quot;user_id&quot;] != user[&quot;id&quot;]:
+        raise HTTPException(status_code=403, detail=&quot;본인이 쓴 글만 수정·삭제할 수 있습니다&quot;)
+
+
+# ================================================================== 인증 API
+@app.post(&quot;/api/auth/signup&quot;, response_model=UserOut, status_code=201)
+def signup(body: SignupIn):
+    hashed = security.hash_password(body.password)  # 비밀번호 → 해시 (원래 비밀번호는 저장하지 않는다)
+    user = db.create_user(body.username, hashed, body.nickname.strip())
+    if user is None:
+        raise HTTPException(status_code=409, detail=&quot;이미 사용 중인 아이디입니다&quot;)
+    return user
+
+
+@app.post(&quot;/api/auth/login&quot;, response_model=TokenOut)
+def login(body: LoginIn):
+    user = db.get_user_by_username(body.username)
+    # 아이디가 없을 때와 비밀번호가 틀릴 때 같은 메시지를 준다
+    #   → &quot;이 아이디는 있다&quot; 는 정보를 공격자에게 주지 않기 위해
+    if user is None or not security.verify_password(body.password, user[&quot;password_hash&quot;]):
+        raise HTTPException(status_code=401, detail=&quot;아이디 또는 비밀번호가 올바르지 않습니다&quot;)
+    token = security.create_access_token(user[&quot;id&quot;])
+    return {&quot;access_token&quot;: token, &quot;user&quot;: user}  # user 의 password_hash 는 UserOut 모양에 없어서 빠진다
+
+
+@app.get(&quot;/api/auth/me&quot;, response_model=UserOut)
+def me(user: CurrentUser):
+    return user
+
+
+# ================================================================== 게시글 API
+@app.get(&quot;/api/posts&quot;, response_model=list[PostOut])
+def list_posts(user_id: int | None = None):  # 주소 뒤 ?user_id=3 (쿼리 매개변수, 없어도 됨)
+    return db.list_posts(user_id)
+
+
+@app.get(&quot;/api/posts/{post_id}&quot;, response_model=PostOut)
+def get_post(post_id: int):
+    return find_post_or_404(post_id)
+
+
+@app.post(&quot;/api/posts&quot;, response_model=PostOut, status_code=201)
+def create_post(body: PostIn, user: CurrentUser):  # user: 로그인 확인을 통과해야 이 함수가 실행된다
+    title = body.title.strip()
+    if not title:
+        raise HTTPException(status_code=400, detail=&quot;제목을 입력하세요&quot;)
+    return db.create_post(user[&quot;id&quot;], title, body.content.strip())
+
+
+@app.put(&quot;/api/posts/{post_id}&quot;, response_model=PostOut)
+def update_post(post_id: int, body: PostIn, user: CurrentUser):
+    post = find_post_or_404(post_id)  # 1. 글이 있나? (없으면 404)
+    check_owner(post, user)           # 2. 내 글인가? (아니면 403)
+    title = body.title.strip()
+    if not title:
+        raise HTTPException(status_code=400, detail=&quot;제목을 입력하세요&quot;)
+    return db.update_post(post_id, title, body.content.strip())
+
+
+@app.delete(&quot;/api/posts/{post_id}&quot;, status_code=204)
+def delete_post(post_id: int, user: CurrentUser):
+    post = find_post_or_404(post_id)
+    check_owner(post, user)
+    db.delete_post(post_id)
+    return Response(status_code=204)
+</code></pre>
+<p><strong>의존성 주입(Depends) 읽는 법</strong></p>
+<pre><code class="language-python">CurrentUser = Annotated[dict, Depends(get_current_user)]
+
+@app.post(&quot;/api/posts&quot;)
+def create_post(body: PostIn, user: CurrentUser): ...
+</code></pre>
+<ol>
+<li>요청이 오면 FastAPI 는 <code>create_post</code> 를 실행하기 <strong>전에</strong> <code>get_current_user</code> 를 먼저 실행한다.</li>
+<li><code>get_current_user</code> 는 <code>bearer</code>(HTTPBearer)에게 헤더의 토큰을 받아 검사한다. 문제가 있으면 여기서 401 을 던지고 끝난다. <code>create_post</code> 는 실행조차 되지 않는다.</li>
+<li>통과하면 돌려준 사용자 딕셔너리가 <code>user</code> 매개변수로 들어간다.</li>
+</ol>
+<p>로그인이 필요한 API 에는 <code>user: CurrentUser</code> 한 줄만 붙이면 된다.</p>
+<p><strong>403 과 404 의 순서</strong> <code>update_post</code> 는 ① 글이 있는지(404) → ② 내 글인지(403) 순서로 검사한다. SQL 에 <code>WHERE id = %s AND user_id = %s</code> 를 넣는 방법도 있지만, 그러면 "없는 글" 과 "남의 글" 을 구분할 수 없어 화면에 정확한 이유를 보여 주기 어렵다.</p>
+<p><strong>로그인 실패 메시지를 하나로</strong> 아이디가 없을 때와 비밀번호가 틀릴 때 같은 문구("아이디 또는 비밀번호가 올바르지 않습니다")를 돌려준다. 다르게 알려 주면 공격자가 "이 아이디는 가입되어 있구나" 를 알아낼 수 있다.</p>
+<h2 id="8-6-서버-실행과-docs-로-시험하기">8-6. 서버 실행과 /docs 로 시험하기</h2>
+<p><strong>[PS]</strong> <code>C:\study\authboard\backend</code>, <code>(.venv)</code> 가 켜진 터미널</p>
+<pre><code class="language-powershell">uvicorn main:app --reload
+</code></pre>
+<blockquote class="note">
+<p>기초 과정 API 서버가 아직 8000 번에서 돌고 있다면 먼저 그 터미널에서 <strong>Ctrl+C</strong> 로 끈다. 같은 포트를 두 서버가 쓸 수 없다.</p>
+</blockquote>
+<p>http://localhost:8000/docs 를 연다. 자물쇠 🔒 가 붙은 API 가 로그인이 필요한 API 다.</p>
+<figure><a href="../images/a8_docs.png" target="_blank"><img src="../images/a8_docs.png" alt="로그인 API 가 추가된 /docs" loading="lazy"></a><figcaption>로그인 API 가 추가된 /docs</figcaption></figure>
+<p><strong>순서대로 시험하기</strong></p>
+<ol>
+<li><strong>POST /api/auth/signup</strong> → Try it out → 아래 본문으로 Execute → <strong>201</strong></li>
+</ol>
+<pre><code class="language-json">{ &quot;username&quot;: &quot;minsu&quot;, &quot;password&quot;: &quot;password123&quot;, &quot;nickname&quot;: &quot;민수&quot; }
+</code></pre>
+<ol start="2">
+<li>같은 본문으로 한 번 더 → <strong>409</strong> <code>"이미 사용 중인 아이디입니다"</code></li>
+<li><strong>POST /api/auth/login</strong> → <code>{"username": "minsu", "password": "password123"}</code> → <strong>200</strong>. 응답의 <code>access_token</code> 값(따옴표 안)을 복사한다.</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;access_token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwia...&quot;,
+  &quot;token_type&quot;: &quot;bearer&quot;,
+  &quot;user&quot;: { &quot;id&quot;: 1, &quot;username&quot;: &quot;minsu&quot;, &quot;nickname&quot;: &quot;민수&quot; }
+}
+</code></pre>
+<ol start="4">
+<li><strong>POST /api/posts</strong> 를 토큰 없이 Execute → <strong>401</strong> <code>"로그인이 필요합니다"</code></li>
+<li>오른쪽 위 <strong>Authorize</strong> 버튼 → Value 칸에 복사한 토큰을 붙여 넣고(앞에 Bearer 는 쓰지 않는다) → Authorize → Close</li>
+<li>다시 <strong>POST /api/posts</strong> → <code>{"title": "민수의 첫 글", "content": "hi"}</code> → <strong>201</strong>. <code>writer</code> 가 <code>"민수"</code> 로 들어가 있다.</li>
+<li>회원을 하나 더 만들고(<code>jisu</code>) 그 토큰으로 Authorize 를 바꾼 뒤, 민수의 글을 <strong>PUT</strong> 또는 <strong>DELETE</strong> → <strong>403</strong> <code>"본인이 쓴 글만 수정·삭제할 수 있습니다"</code></li>
+</ol>
+<p>교안을 만들 때 같은 시험을 자동으로 돌린 실제 결과다.</p>
+<pre><code class="language-text">signup 201 {'id': 1, 'username': 'minsu', 'nickname': '민수'}
+dup 409 {'detail': '이미 사용 중인 아이디입니다'}
+wrongpw 401 {'detail': '아이디 또는 비밀번호가 올바르지 않습니다'}
+me 200 {'id': 1, 'username': 'minsu', 'nickname': '민수'}
+noauth post 401 {'detail': '로그인이 필요합니다'}
+bad token 401 {'detail': '로그인이 만료되었습니다. 다시 로그인하세요'}
+create 201 {'id': 1, 'user_id': 1, 'writer': '민수', 'title': '민수의 글', ...}
+other put 403 {'detail': '본인이 쓴 글만 수정·삭제할 수 있습니다'}
+own put 200 {'id': 1, 'user_id': 1, 'writer': '민수', 'title': '수정', ...}
+other del 403 {'detail': '본인이 쓴 글만 수정·삭제할 수 있습니다'}
+own del 204
+404 404 {'detail': '글을 찾을 수 없습니다'}
+expired 401 {'detail': '로그인이 만료되었습니다. 다시 로그인하세요'}
+</code></pre>
+<p><strong>DB 에서 확인하기</strong> - 비밀번호가 아니라 해시가 저장되어 있다.</p>
+<p><strong>[PS]</strong></p>
+<pre><code class="language-powershell">docker exec react-auth-db psql -U postgres -d authboard -c &quot;SELECT id, username, left(password_hash, 40) AS password_hash, nickname FROM users;&quot;
+</code></pre>
+<pre><code class="language-text"> id | username |              password_hash               | nickname
+----+----------+------------------------------------------+----------
+  1 | jisu     | $argon2id$v=19$m=65536,t=3,p=4$KH3G8QI+p | 지수
+  3 | minsu    | $argon2id$v=19$m=65536,t=3,p=4$+laxpGAXB | 민수
+(2 rows)
+</code></pre>
+<blockquote class="note">
+<p>위 결과에서 번호가 1, 3 으로 2 가 비어 있다. 이미 있는 아이디로 가입을 시도하면 INSERT 가 실패하는데, 그때도 SERIAL 번호(시퀀스)는 하나 소모되기 때문이다. 번호는 "고유하기만 하면 되는 값" 이라 빈 번호가 있어도 문제없다.</p>
+</blockquote>
+<h2 id="정리">정리</h2>
+<ul>
+<li>users(아이디 UNIQUE, 비밀번호 <strong>해시</strong>, 닉네임) 1 : N posts(user_id FK).</li>
+<li>가입: 해시해서 저장, 중복이면 409. 로그인: 해시 비교 → JWT 발급.</li>
+<li><code>user: CurrentUser</code> (Depends) 한 줄로 "로그인 필수 + 현재 사용자" 를 얻는다.</li>
+<li>수정·삭제: 404(없음) → 403(남의 글) 순서로 검사.</li>
+<li>작성자는 입력받지 않고 토큰에서 정한다 → 남의 이름으로 쓸 수 없다.</li>
+</ul>
+<h2 id="확인-문제">확인 문제</h2>
+<ol>
+<li><code>get_current_user</code> 가 401 을 던지는 경우를 세 가지 쓰시오.</li>
+<li>글쓰기 요청 본문에 <code>"user_id": 99</code> 를 넣어 보내면 99번 사용자의 글로 저장되는가? 코드를 근거로 답하시오.</li>
+<li>비밀번호를 8자 미만으로 가입 요청하면 몇 번 상태 코드가 오는가? 그 검사는 어느 코드가 하는가?</li>
+<li><code>/api/auth/me</code> 에 회원의 가입 날짜(<code>created_at</code>)도 함께 돌려주려면 어느 파일의 어디를 고쳐야 하는지 모두 쓰시오.</li>
+<li><code>SECRET_KEY</code> 를 바꾸고 서버를 다시 켜면, 이미 로그인해 있던 사용자들은 어떻게 되는가?</li>
+</ol>
+<nav class="pager"><a href="ch07.html"><small>← 이전</small>7장 프로젝트 ① 게시판을 Router 로 바꾸기</a><a class="next" href="ch09.html"><small>다음 →</small>9장 프로젝트 ③ React 로그인 연동</a></nav>
+</article></div>
+<footer>React + FastAPI + PostgreSQL · 2단계 React 심화 · 강사 김대철 · <a href="https://github.com/sinaboro/react-fastapi-postgresql">GitHub</a></footer>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+<script>
+document.querySelectorAll('pre code').forEach(function(el){
+  if(window.hljs && !/language-(text|plaintext)/.test(el.className)){ try{ hljs.highlightElement(el); }catch(e){} }
+  var b=document.createElement('button'); b.className='copy'; b.textContent='복사';
+  b.onclick=function(){                       // 코드 상자의 글자를 그대로 클립보드에 복사
+    navigator.clipboard.writeText(el.innerText).then(function(){
+      b.textContent='복사됨'; b.classList.add('ok');
+      setTimeout(function(){ b.textContent='복사'; b.classList.remove('ok'); },1500);
+    });
+  };
+  el.parentNode.appendChild(b);
+});
+</script>
+</body></html>
