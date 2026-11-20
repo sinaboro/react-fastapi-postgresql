@@ -79,7 +79,7 @@ pip install reportlab matplotlib markdown
 python tools\make_figures.py
 python tools\build_guide.py              # 두 권 모두
 python tools\build_guide.py basic        # 기초만
-python toolsbuild_site.py               # 웹 교안 (GitHub Pages, docs/ 폴더)
+python toolsuild_site.py               # 웹 교안 (GitHub Pages, docs/ 폴더)
 ```
 
 강사 김대철
