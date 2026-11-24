@@ -1123,7 +1123,7 @@ http://localhost:5173 을 열면 게시판이 나온다.
 
 1. **글 개수 표시 꾸미기** - 목록 위에 "오늘 쓴 글 N개" 를 함께 보여 주기. (`created_at` 의 날짜를 오늘 날짜와 비교)
 2. **검색** - 목록 위에 검색 칸을 두고, 제목에 검색어가 들어간 글만 보여 주기. (서버는 그대로 두고 React 에서 `filter`)
-3. **조회수** - `posts` 에 `views` 열을 추가하고, 글을 읽을 때마다 1 올리기. (백엔드: `ALTER TABLE` 또는 `CREATE TABLE` 고치기 + `UPDATE ... SET views = views + 1`)
+3. **조회수** - `posts` 에 `views` 열을 추가하고, 글을 읽을 때마다 1 올리기. (백엔드: `UPDATE ... SET views = views + 1`. 열 추가는 `ALTER TABLE posts ADD COLUMN views INT NOT NULL DEFAULT 0` 으로 한다. db.py 의 `CREATE TABLE IF NOT EXISTS` 만 고치면 **이미 있는 표에는 아무 일도 일어나지 않는다** - 표를 새로 만들려면 `docker compose down -v` 로 글까지 지워야 한다)
 
 > 2번 검색을 서버 쪽에서 하고 싶다면 `GET /api/posts?q=검색어` 처럼 쿼리 매개변수를 받아 `WHERE title ILIKE %s` 로 찾으면 된다.
 
