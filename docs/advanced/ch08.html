@@ -248,8 +248,8 @@ volumes:
 </code></pre>
 <p><strong>[PS]</strong></p>
 <pre><code class="language-powershell">cd C:\study\authboard
-docker compose up -d
-docker compose ps
+docker compose up -d      # 심화 DB (react-auth-db). 기초 DB 와 포트가 달라 함께 켜도 된다
+docker compose ps         # healthy 확인
 </code></pre>
 <p><code>react-auth-db</code> 가 <code>(healthy)</code> 이면 준비 끝. 기초 과정 DB(react-board-db, 5433)와 <strong>동시에 켜 두어도</strong> 포트와 프로젝트 이름이 달라 괜찮다.</p>
 <div class="file"><span>📄 advanced/board/backend/requirements.txt</span><a href="https://github.com/sinaboro/react-fastapi-postgresql/blob/main/advanced/board/backend/requirements.txt" target="_blank">GitHub 에서 보기</a></div>
@@ -681,7 +681,7 @@ def create_post(body: PostIn, user: CurrentUser): ...
 <p><strong>로그인 실패 메시지를 하나로</strong> 아이디가 없을 때와 비밀번호가 틀릴 때 같은 문구("아이디 또는 비밀번호가 올바르지 않습니다")를 돌려준다. 다르게 알려 주면 공격자가 "이 아이디는 가입되어 있구나" 를 알아낼 수 있다.</p>
 <h2 id="8-6-서버-실행과-docs-로-시험하기">8-6. 서버 실행과 /docs 로 시험하기</h2>
 <p><strong>[PS]</strong> <code>C:\study\authboard\backend</code>, <code>(.venv)</code> 가 켜진 터미널</p>
-<pre><code class="language-powershell">uvicorn main:app --reload
+<pre><code class="language-powershell">uvicorn main:app --reload    # 심화 서버도 8000 번 → 기초 서버가 켜져 있으면 먼저 Ctrl+C 로 끈다
 </code></pre>
 <blockquote class="note">
 <p>기초 과정 API 서버가 아직 8000 번에서 돌고 있다면 먼저 그 터미널에서 <strong>Ctrl+C</strong> 로 끈다. 같은 포트를 두 서버가 쓸 수 없다.</p>
@@ -727,7 +727,8 @@ expired 401 {'detail': '로그인이 만료되었습니다. 다시 로그인하�
 </code></pre>
 <p><strong>DB 에서 확인하기</strong> - 비밀번호가 아니라 해시가 저장되어 있다.</p>
 <p><strong>[PS]</strong></p>
-<pre><code class="language-powershell">docker exec react-auth-db psql -U postgres -d authboard -c &quot;SELECT id, username, left(password_hash, 40) AS password_hash, nickname FROM users;&quot;
+<pre><code class="language-powershell"># users 테이블 직접 보기 - 비밀번호는 원문이 아니라 Argon2 해시($argon2id$...)로 저장돼 있다 (left: 앞 40글자만)
+docker exec react-auth-db psql -U postgres -d authboard -c &quot;SELECT id, username, left(password_hash, 40) AS password_hash, nickname FROM users;&quot;
 </code></pre>
 <pre><code class="language-text"> id | username |              password_hash               | nickname
 ----+----------+------------------------------------------+----------

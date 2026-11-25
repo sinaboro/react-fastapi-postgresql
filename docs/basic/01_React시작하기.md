@@ -36,8 +36,8 @@ VS Code 터미널에서 다음을 차례로 친다.
 **[PS]** ① 실습 폴더로 이동해 프로젝트 만들기
 
 ```powershell
-cd C:\study
-npm create vite@latest my-react -- --template react --no-interactive
+cd C:\study                # 실습 폴더로
+npm create vite@latest my-react -- --template react --no-interactive   # my-react 폴더에 React 프로젝트 만들기 (질문 없이)
 ```
 
 | 부분 | 뜻 |
@@ -68,8 +68,8 @@ create-vite v9.3.4
 **[PS]** ② 필요한 패키지 설치 (처음 한 번)
 
 ```powershell
-cd my-react
-npm install
+cd my-react      # 방금 만든 프로젝트 폴더로
+npm install      # package.json 의 라이브러리를 node_modules 로 받는다 (1~2분)
 ```
 
 `npm install` 은 `package.json` 에 적힌 패키지(React, Vite 등)를 인터넷에서 받아 `node_modules` 폴더에 넣는다. 1~2분 걸릴 수 있다.
@@ -77,7 +77,7 @@ npm install
 **[PS]** ③ 개발 서버 켜기
 
 ```powershell
-npm run dev
+npm run dev      # 개발 서버 켜기 → http://localhost:5173 (끌 때는 Ctrl+C)
 ```
 
 ```text
@@ -93,11 +93,17 @@ npm run dev
 
 가운데 **Count is 0** 버튼을 눌러 보자. 숫자가 올라간다. 이미 React 앱 하나가 돌아가고 있는 것이다.
 
-> **개발 서버는 켜 둔 채로** 코드를 고친다. 터미널을 하나 더 쓰고 싶으면 터미널 창 오른쪽 위의 **+** 를 누른다. 서버를 끌 때는 서버가 돌고 있는 터미널을 클릭하고 **Ctrl+C**.
+> **개발 서버는 켜 둔 채로** 코드를 고친다. 터미널을 하나 더 쓰고 싶으면 터미널 창 오른쪽 위의 **+** 를 누른다(0장 0-2 의 그림). 새 터미널은 오른쪽 목록에 하나씩 쌓이고, 눌러서 오갈 수 있다. 서버를 끌 때는 서버가 돌고 있는 터미널을 클릭하고 **Ctrl+C**. 교안에서 **"새 터미널(+)을 열고"** 라고 하면 이 **+** 를 누르라는 뜻이다.
 
 ## 1-3. 프로젝트 폴더 둘러보기
 
-VS Code 메뉴 **파일 → 폴더 열기** 로 `C:\study\my-react` 를 연다.
+VS Code 메뉴 **파일(File) → 폴더 열기(Open Folder...)** 로 `C:\study\my-react` 를 연다. 폴더를 고르는 창에서 `C:\study` 로 들어가 `my-react` 를 한 번 클릭하고 **폴더 선택**(Select folder). "이 폴더의 작성자를 신뢰합니까?" 라고 물으면 **예, 작성자를 신뢰합니다**(Yes, I trust the authors).
+
+![파일(File) 메뉴 - 폴더 열기(Open Folder...)](../images/vs_file_menu.jpg)
+
+열리면 왼쪽 **탐색기**(Explorer)에 프로젝트 파일이 보인다. 터미널도 이 폴더(`C:\study\my-react`)에서 열린다.
+
+![탐색기 - my-react 프로젝트의 파일들](../images/vs_explorer.jpg)
 
 ```text
 my-react
@@ -214,9 +220,9 @@ createRoot(document.getElementById("root")).render(
 **[PS]** 새 터미널(+)을 열고
 
 ```powershell
-cd C:\study\react-fastapi-postgresql\basic\examples
-npm install
-npm run dev
+cd C:\study\react-fastapi-postgresql\basic\examples   # 교안 예제 모음 앱
+npm install      # 처음 한 번만
+npm run dev      # 5173 이 쓰는 중이면 5174 로 켜진다 (터미널에 나온 주소로 연다)
 ```
 
 ```text

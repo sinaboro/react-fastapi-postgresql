@@ -6,6 +6,7 @@
 
 | 증상 | 원인 | 해결 |
 |---|---|---|
+| `Copy-Item`, `Activate.ps1` 이 "내부 또는 외부 명령... 이 아닙니다" | VS Code 터미널이 PowerShell 이 아니라 **cmd**(명령 프롬프트)다. 프롬프트에 `PS` 가 없다 | 터미널 오른쪽 위 **+** 옆 **∨** → **PowerShell** (0장 0-2 그림). 늘 PowerShell 로 열리게: 같은 목록의 **Select Default Profile** → PowerShell |
 | `'npm' 용어가 ... 인식되지 않습니다` | Node.js 미설치, 또는 설치 전에 연 터미널 | Node.js 설치 후 VS Code 를 완전히 껐다 켠다 |
 | `npm run dev` → `Missing script: "dev"` | `package.json` 이 없는 폴더에서 실행 | `cd` 로 프로젝트 폴더(예: `my-react`)에 들어간다 |
 | `'vite' 은(는) 내부 또는 외부 명령...이 아닙니다` | `npm install` 을 안 함 | 그 폴더에서 `npm install` |
@@ -33,6 +34,7 @@
 
 | 증상 | 원인 | 해결 |
 |---|---|---|
+| 서버를 바꿔 켰는데 /docs 에 예전 서버의 API 가 보인다 (심화 서버인데 `/api/auth/...` 가 없다) | 예전 `uvicorn` 이 아직 살아 있다. 터미널을 Ctrl+C 없이 휴지통 아이콘으로 닫으면 남을 수 있다 | 예전 서버 터미널에서 **Ctrl+C**. 터미널이 없으면 작업 관리자에서 `python` 을 모두 끝내거나 PC 를 다시 시작한다 |
 | 화면에 "API 서버에 연결할 수 없습니다", 콘솔 `Failed to fetch` | uvicorn 이 꺼져 있음 / 주소 오타 | 터미널 2 에서 `uvicorn main:app --reload`, `config.js` 의 주소 확인 |
 | 콘솔 `blocked by CORS policy` | 서버의 CORS 허락 목록에 지금 주소(포트)가 없음 | `main.py` 의 `allow_origins` 확인. React 를 5173 으로 실행 |
 | 저장 시 422 | 필수 칸이 비었거나, `Content-Type` 헤더를 빠뜨림 | Network 탭 → Response 의 `detail` 을 읽는다 |

@@ -42,10 +42,10 @@
 **[PS]**
 
 ```powershell
-mkdir C:\study\board
+mkdir C:\study\board -Force     # 게시판 프로젝트 폴더 (이미 있으면 그냥 넘어간다)
 cd C:\study\board
-Copy-Item C:\study\react-fastapi-postgresql\basic\board\docker-compose.yml .
-Copy-Item -Recurse C:\study\react-fastapi-postgresql\basic\board\backend .\backend
+Copy-Item C:\study\react-fastapi-postgresql\basic\board\docker-compose.yml .            # DB 설정 파일 복사 (마지막 . = 지금 폴더로)
+Copy-Item -Recurse C:\study\react-fastapi-postgresql\basic\board\backend .\backend     # FastAPI 서버 폴더 통째로 복사
 ```
 
 > `Copy-Item 원본 .` 의 마지막 점(`.`)은 "지금 폴더로" 라는 뜻이다.
@@ -102,7 +102,7 @@ volumes:
 **[PS]** `C:\study\board` 에서
 
 ```powershell
-docker compose up -d
+docker compose up -d      # PostgreSQL 컨테이너를 뒤에서(-d) 켠다. 처음에는 이미지를 받느라 1~2분
 ```
 
 처음에는 `postgres:18` 이미지를 받느라 `Pulling` 줄이 여러 개 나오며 1~2분 걸린다. 끝나면 이렇게 나온다.
@@ -117,7 +117,7 @@ docker compose up -d
 **[PS]** 상태 확인
 
 ```powershell
-docker compose ps
+docker compose ps         # STATUS 가 healthy 가 될 때까지 몇 번 다시 쳐 본다
 ```
 
 ```text
@@ -137,12 +137,23 @@ react-board-db   postgres:18   "docker-entrypoint.s…"   db        8 seconds ag
 
 ```powershell
 cd C:\study\board\backend
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m venv .venv              # 이 프로젝트 전용 파이썬 환경(.venv 폴더) 만들기 - 처음 한 번만
+.venv\Scripts\Activate.ps1        # 가상 환경 켜기 → 프롬프트 앞에 (.venv) 가 붙는다 (터미널을 새로 열 때마다)
+pip install -r requirements.txt   # FastAPI·uvicorn·psycopg 설치 - 처음 한 번만 (1~2분)
 ```
 
 가상환경이 켜지면 프롬프트 앞에 `(.venv)` 가 붙는다. 설치가 끝나면 마지막에 `Successfully installed ... fastapi-0.162.2 ... psycopg-3.3.8 ...` 같은 줄이 나온다.
+
+```text
+(.venv) PS C:\study\board\backend> pip install -r requirements.txt
+...
+Successfully installed ... fastapi-0.162.2 ... psycopg-3.3.8 ... uvicorn-0.54.0 ...
+
+[notice] A new release of pip is available: 23.2.1 -> 26.3
+[notice] To update, run: python.exe -m pip install --upgrade pip
+```
+
+> 마지막의 **`[notice]` 두 줄은 오류가 아니다.** "pip 새 버전이 나왔다" 는 안내일 뿐이니 무시해도 된다. `ERROR` 로 시작하는 줄이 있을 때만 부록 A 를 찾는다.
 
 > **`이 시스템에서 스크립트를 실행할 수 없으므로 ...Activate.ps1 파일을 로드할 수 없습니다`** 오류가 나면 PowerShell 의 스크립트 실행이 막혀 있는 것이다. 아래 명령을 **한 번만** 실행하고 다시 `.venv\Scripts\Activate.ps1` 을 친다.
 >
@@ -416,7 +427,7 @@ has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is pres
 **[PS]** `(.venv)` 가 붙은 터미널, `C:\study\board\backend` 에서
 
 ```powershell
-uvicorn main:app --reload
+uvicorn main:app --reload    # main.py 의 app 을 켠다 → http://localhost:8000 (--reload: 코드를 고치면 저절로 다시 켜짐, 끌 때는 Ctrl+C)
 ```
 
 ```text
@@ -466,6 +477,7 @@ INFO:     Application startup complete.
 **[PS]**
 
 ```powershell
+# DB 컨테이너 안의 psql 로 posts 테이블 직접 보기 (화면·API 를 거치지 않고 DB 에 저장된 그대로)
 docker exec react-board-db psql -U postgres -d board -c "SELECT id, title, writer, created_at FROM posts ORDER BY id;"
 ```
 
@@ -487,9 +499,9 @@ docker exec react-board-db psql -U postgres -d board -c "SELECT id, title, write
 
 ```powershell
 cd C:\study\board
-npm create vite@latest frontend -- --template react --no-interactive
+npm create vite@latest frontend -- --template react --no-interactive   # board 안에 frontend 폴더로 React 프로젝트 만들기
 cd frontend
-npm install
+npm install      # 라이브러리 받기 (1~2분)
 ```
 
 1장에서처럼 정리한다.

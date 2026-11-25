@@ -40,10 +40,11 @@
 **[PS]**
 
 ```powershell
+# 7장에서 만든 Router 판 React 를 심화 게시판의 frontend 로 복사해서 이어 만든다
 Copy-Item -Recurse C:\study\board\frontend-router C:\study\authboard\frontend
 cd C:\study\authboard\frontend
-npm install
-mkdir src\context
+npm install          # 복사한 폴더에도 node_modules 가 필요하다 (복사 때 빠졌거나 깨졌을 수 있다)
+mkdir src\context    # 로그인 상태(AuthContext)를 둘 폴더
 ```
 
 > `node_modules` 까지 복사되어 조금 걸린다. 7장을 끝내지 못했다면 저장소의 `advanced\board-router\frontend` 를 복사한 뒤 `npm install` 하면 된다. 이 장의 완성본은 `advanced\board\frontend` 다.

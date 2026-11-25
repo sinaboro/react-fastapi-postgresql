@@ -24,10 +24,10 @@ Router 는 주소창을 직접 다루기 때문에 예제 앱 메뉴와 섞지 �
 
 ```powershell
 cd C:\study
-npm create vite@latest router-practice -- --template react --no-interactive
+npm create vite@latest router-practice -- --template react --no-interactive   # 연습용 새 프로젝트
 cd router-practice
-npm install
-npm install react-router
+npm install                  # 기본 라이브러리
+npm install react-router     # 주소(URL)에 따라 화면을 바꿔 주는 라이브러리 추가
 ```
 
 `npm install react-router` 가 Router 라이브러리를 추가한다. `package.json` 의 dependencies 에 `"react-router": "^8.5.2"` 같은 줄이 생긴다. (이 교안은 8.5.2 로 확인했다.)
@@ -37,9 +37,9 @@ npm install react-router
 **[PS]** 완성본 실행
 
 ```powershell
-cd C:\study\react-fastapi-postgresql\advanced\router-demo
-npm install
-npm run dev
+cd C:\study\react-fastapi-postgresql\advanced\router-demo   # 이 장의 완성본
+npm install      # 처음 한 번만
+npm run dev      # http://localhost:5173
 ```
 
 ## 4-3. BrowserRouter - Router 켜기

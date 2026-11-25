@@ -103,19 +103,19 @@ footer{padding:40px 0 50px;color:var(--sub);font-size:14px;text-align:center}
 <p>Router 는 주소창을 직접 다루기 때문에 예제 앱 메뉴와 섞지 않고 <strong>별도 프로젝트</strong>로 연습한다. 완성본은 <code>advanced/router-demo</code> 다.</p>
 <p><strong>[PS]</strong> 내 연습 프로젝트를 만든다면</p>
 <pre><code class="language-powershell">cd C:\study
-npm create vite@latest router-practice -- --template react --no-interactive
+npm create vite@latest router-practice -- --template react --no-interactive   # 연습용 새 프로젝트
 cd router-practice
-npm install
-npm install react-router
+npm install                  # 기본 라이브러리
+npm install react-router     # 주소(URL)에 따라 화면을 바꿔 주는 라이브러리 추가
 </code></pre>
 <p><code>npm install react-router</code> 가 Router 라이브러리를 추가한다. <code>package.json</code> 의 dependencies 에 <code>"react-router": "^8.5.2"</code> 같은 줄이 생긴다. (이 교안은 8.5.2 로 확인했다.)</p>
 <blockquote class="note">
 <p>인터넷 자료에서 <code>react-router-dom</code> 패키지를 보게 될 수 있다. 예전(6 버전까지)에 쓰던 이름이고, 7 버전부터는 <code>react-router</code> 하나로 합쳐졌다. 이 과정은 <code>react-router</code> 에서 import 한다.</p>
 </blockquote>
 <p><strong>[PS]</strong> 완성본 실행</p>
-<pre><code class="language-powershell">cd C:\study\react-fastapi-postgresql\advanced\router-demo
-npm install
-npm run dev
+<pre><code class="language-powershell">cd C:\study\react-fastapi-postgresql\advanced\router-demo   # 이 장의 완성본
+npm install      # 처음 한 번만
+npm run dev      # http://localhost:5173
 </code></pre>
 <h2 id="4-3-browserrouter---router-켜기">4-3. BrowserRouter - Router 켜기</h2>
 <div class="file"><span>📄 advanced/router-demo/src/main.jsx</span><a href="https://github.com/sinaboro/react-fastapi-postgresql/blob/main/advanced/router-demo/src/main.jsx" target="_blank">GitHub 에서 보기</a></div>

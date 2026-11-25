@@ -185,10 +185,10 @@ footer{padding:40px 0 50px;color:var(--sub);font-size:14px;text-align:center}
 <h2 id="9-2-실습-폴더-준비와-postgresql-켜기">9-2. 실습 폴더 준비와 PostgreSQL 켜기</h2>
 <p>이 장에서는 <code>C:\study\board</code> 폴더에 프로젝트를 만든다. 데이터베이스 설정과 API 서버(백엔드)는 <strong>저장소의 완성본을 복사해서 읽으며 이해</strong>하고, React 화면(프론트엔드)은 <strong>직접 만든다.</strong></p>
 <p><strong>[PS]</strong></p>
-<pre><code class="language-powershell">mkdir C:\study\board
+<pre><code class="language-powershell">mkdir C:\study\board -Force     # 게시판 프로젝트 폴더 (이미 있으면 그냥 넘어간다)
 cd C:\study\board
-Copy-Item C:\study\react-fastapi-postgresql\basic\board\docker-compose.yml .
-Copy-Item -Recurse C:\study\react-fastapi-postgresql\basic\board\backend .\backend
+Copy-Item C:\study\react-fastapi-postgresql\basic\board\docker-compose.yml .            # DB 설정 파일 복사 (마지막 . = 지금 폴더로)
+Copy-Item -Recurse C:\study\react-fastapi-postgresql\basic\board\backend .\backend     # FastAPI 서버 폴더 통째로 복사
 </code></pre>
 <blockquote class="note">
 <p><code>Copy-Item 원본 .</code> 의 마지막 점(<code>.</code>)은 "지금 폴더로" 라는 뜻이다.</p>
@@ -240,7 +240,7 @@ volumes:
   board_data:                         # Docker 가 관리하는 저장 공간
 </code></pre>
 <p><strong>[PS]</strong> <code>C:\study\board</code> 에서</p>
-<pre><code class="language-powershell">docker compose up -d
+<pre><code class="language-powershell">docker compose up -d      # PostgreSQL 컨테이너를 뒤에서(-d) 켠다. 처음에는 이미지를 받느라 1~2분
 </code></pre>
 <p>처음에는 <code>postgres:18</code> 이미지를 받느라 <code>Pulling</code> 줄이 여러 개 나오며 1~2분 걸린다. 끝나면 이렇게 나온다.</p>
 <pre><code class="language-text"> Network react-basic-board_default Created
@@ -249,7 +249,7 @@ volumes:
  Container react-board-db Started
 </code></pre>
 <p><strong>[PS]</strong> 상태 확인</p>
-<pre><code class="language-powershell">docker compose ps
+<pre><code class="language-powershell">docker compose ps         # STATUS 가 healthy 가 될 때까지 몇 번 다시 쳐 본다
 </code></pre>
 <pre><code class="language-text">NAME             IMAGE         COMMAND                   SERVICE   CREATED         STATUS                   PORTS
 react-board-db   postgres:18   &quot;docker-entrypoint.s…&quot;   db        8 seconds ago   Up 7 seconds (healthy)   0.0.0.0:5433-&gt;5432/tcp, [::]:5433-&gt;5432/tcp
@@ -262,12 +262,20 @@ react-board-db   postgres:18   &quot;docker-entrypoint.s…&quot;   db        8 
 <p>파이썬 패키지는 프로젝트마다 따로 설치하는 것이 좋다. 그 "프로젝트 전용 설치 공간" 이 <strong>가상환경</strong>(<code>.venv</code>)이다.</p>
 <p><strong>[PS]</strong> 새 터미널(+)을 열고</p>
 <pre><code class="language-powershell">cd C:\study\board\backend
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m venv .venv              # 이 프로젝트 전용 파이썬 환경(.venv 폴더) 만들기 - 처음 한 번만
+.venv\Scripts\Activate.ps1        # 가상 환경 켜기 → 프롬프트 앞에 (.venv) 가 붙는다 (터미널을 새로 열 때마다)
+pip install -r requirements.txt   # FastAPI·uvicorn·psycopg 설치 - 처음 한 번만 (1~2분)
 </code></pre>
 <p>가상환경이 켜지면 프롬프트 앞에 <code>(.venv)</code> 가 붙는다. 설치가 끝나면 마지막에 <code>Successfully installed ... fastapi-0.162.2 ... psycopg-3.3.8 ...</code> 같은 줄이 나온다.</p>
+<pre><code class="language-text">(.venv) PS C:\study\board\backend&gt; pip install -r requirements.txt
+...
+Successfully installed ... fastapi-0.162.2 ... psycopg-3.3.8 ... uvicorn-0.54.0 ...
+
+[notice] A new release of pip is available: 23.2.1 -&gt; 26.3
+[notice] To update, run: python.exe -m pip install --upgrade pip
+</code></pre>
 <blockquote class="note">
+<p>마지막의 <strong><code>[notice]</code> 두 줄은 오류가 아니다.</strong> "pip 새 버전이 나왔다" 는 안내일 뿐이니 무시해도 된다. <code>ERROR</code> 로 시작하는 줄이 있을 때만 부록 A 를 찾는다.</p>
 <p><strong><code>이 시스템에서 스크립트를 실행할 수 없으므로 ...Activate.ps1 파일을 로드할 수 없습니다</code></strong> 오류가 나면 PowerShell 의 스크립트 실행이 막혀 있는 것이다. 아래 명령을 <strong>한 번만</strong> 실행하고 다시 <code>.venv\Scripts\Activate.ps1</code> 을 친다.</p>
 <p><code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code></p>
 </blockquote>
@@ -558,7 +566,7 @@ has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is pres
 </table></div>
 <h2 id="9-6-서버-실행과-docs-에서-시험하기">9-6. 서버 실행과 /docs 에서 시험하기</h2>
 <p><strong>[PS]</strong> <code>(.venv)</code> 가 붙은 터미널, <code>C:\study\board\backend</code> 에서</p>
-<pre><code class="language-powershell">uvicorn main:app --reload
+<pre><code class="language-powershell">uvicorn main:app --reload    # main.py 의 app 을 켠다 → http://localhost:8000 (--reload: 코드를 고치면 저절로 다시 켜짐, 끌 때는 Ctrl+C)
 </code></pre>
 <pre><code class="language-text">INFO:     Will watch for changes in these directories: ['C:\\study\\board\\backend']
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
@@ -598,7 +606,8 @@ INFO:     Application startup complete.
 </ol>
 <p><strong>데이터베이스에 정말 들어갔을까?</strong> 컨테이너 안의 psql 로 직접 확인해 보자.</p>
 <p><strong>[PS]</strong></p>
-<pre><code class="language-powershell">docker exec react-board-db psql -U postgres -d board -c &quot;SELECT id, title, writer, created_at FROM posts ORDER BY id;&quot;
+<pre><code class="language-powershell"># DB 컨테이너 안의 psql 로 posts 테이블 직접 보기 (화면·API 를 거치지 않고 DB 에 저장된 그대로)
+docker exec react-board-db psql -U postgres -d board -c &quot;SELECT id, title, writer, created_at FROM posts ORDER BY id;&quot;
 </code></pre>
 <pre><code class="language-text"> id |           title            | writer |          created_at
 ----+----------------------------+--------+-------------------------------
@@ -612,9 +621,9 @@ INFO:     Application startup complete.
 <h2 id="9-7-react-프로젝트-만들기">9-7. React 프로젝트 만들기</h2>
 <p><strong>[PS]</strong> 새 터미널(+)을 열고</p>
 <pre><code class="language-powershell">cd C:\study\board
-npm create vite@latest frontend -- --template react --no-interactive
+npm create vite@latest frontend -- --template react --no-interactive   # board 안에 frontend 폴더로 React 프로젝트 만들기
 cd frontend
-npm install
+npm install      # 라이브러리 받기 (1~2분)
 </code></pre>
 <p>1장에서처럼 정리한다.</p>
 <ol>

@@ -34,11 +34,13 @@
 **[PS]** 터미널 1, 2
 
 ```powershell
+# 터미널 1: 기초 과정 DB 켜기
 cd C:\study\board
-docker compose up -d
-cd backend
-.venv\Scripts\Activate.ps1
-uvicorn main:app --reload
+docker compose up -d                 # 기초 게시판 DB (react-board-db)
+# 터미널 2 (+ 로 새로 열고): 기초 과정 FastAPI 서버 켜기 - 이 터미널은 켜 둔 채로 둔다
+cd C:\study\board\backend
+.venv\Scripts\Activate.ps1           # (.venv) 확인
+uvicorn main:app --reload            # http://localhost:8000/docs
 ```
 
 > 기초 과정 폴더(`C:\study\board`)가 없다면 저장소의 `basic\board` 폴더를 `C:\study\board` 로 복사하고 기초 교안 9-3 의 가상환경 만들기부터 하면 된다.
@@ -48,10 +50,11 @@ uvicorn main:app --reload
 **[PS]** 터미널 3
 
 ```powershell
+# 기초 완성본 React 를 frontend-router 라는 새 폴더로 복사해서 고친다 (원본은 그대로 둔다)
 Copy-Item -Recurse C:\study\react-fastapi-postgresql\basic\board\frontend C:\study\board\frontend-router
 cd C:\study\board\frontend-router
-npm install
-npm install react-router
+npm install                  # 기본 라이브러리
+npm install react-router     # 이번에 새로 쓰는 라이브러리
 ```
 
 그다음 폴더를 정리한다.
