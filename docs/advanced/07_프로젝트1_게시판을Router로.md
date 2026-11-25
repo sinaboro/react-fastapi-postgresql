@@ -50,11 +50,11 @@ uvicorn main:app --reload            # http://localhost:8000/docs
 **[PS]** 터미널 3
 
 ```powershell
-# 기초 완성본 React 를 frontend-router 라는 새 폴더로 복사해서 고친다 (원본은 그대로 둔다)
+# 기초 완성본 React 를 frontend-router 라는 새 폴더로 복사해서 고친다 (원본은 그대로 두어 비교할 수 있게)
 Copy-Item -Recurse C:\study\react-fastapi-postgresql\basic\board\frontend C:\study\board\frontend-router
 cd C:\study\board\frontend-router
-npm install                  # 기본 라이브러리
-npm install react-router     # 이번에 새로 쓰는 라이브러리
+npm install                  # 복사한 폴더에도 라이브러리가 필요하다 (node_modules 는 복사되지 않았거나 깨졌을 수 있다)
+npm install react-router     # 이번 장에서 새로 쓰는 라이브러리
 ```
 
 그다음 폴더를 정리한다.
@@ -205,8 +205,11 @@ import { BrowserRouter } from "react-router";
 import "./index.css";
 import App from "./App.jsx";
 
+// index.html 의 <div id="root"> 를 찾아 그 안에 React 앱을 그린다
 createRoot(document.getElementById("root")).render(
+  // StrictMode: 개발 중에만 실수(부작용 등)를 더 잘 찾도록 검사를 켠다. 화면에는 아무것도 그리지 않는다
   <StrictMode>
+    {/* BrowserRouter: 브라우저 주소창과 React 를 이어 준다. 이 안쪽에서만 Route·Link·useNavigate 를 쓸 수 있다 */}
     <BrowserRouter>
       <App />
     </BrowserRouter>
@@ -307,8 +310,10 @@ import { useApi } from "../hooks/useApi";
 import { formatDate } from "../format";
 
 function PostListPage() {
+  // useApi: 불러오기·로딩·오류 상태를 한 번에 돌려주는 사용자 정의 Hook (3장). [] = 처음 한 번만 불러온다
   const { data: posts, loading, error } = useApi(getPosts, []);
 
+  // 불러오는 중·오류면 여기서 먼저 끝낸다 → 아래에서는 posts 가 항상 있다
   if (loading) return <p className="info">⏳ 불러오는 중...</p>;
   if (error) return <p className="error">⚠️ {error.message}</p>;
 
@@ -316,6 +321,7 @@ function PostListPage() {
     <div>
       <div className="toolbar">
         <span>전체 {posts.length}개</span>
+        {/* 버튼 대신 Link: 글쓰기 화면에도 /posts/new 라는 진짜 주소가 생겼다 */}
         <Link to="/posts/new" className="button primary">
           ✏️ 글쓰기
         </Link>
@@ -334,10 +340,12 @@ function PostListPage() {
             </tr>
           </thead>
           <tbody>
+            {/* 글마다 한 줄. key 는 React 가 줄을 구분하는 이름표 */}
             {posts.map((post) => (
               <tr key={post.id}>
                 <td className="col-id">{post.id}</td>
                 <td>
+                  {/* 제목을 누르면 /posts/번호 로 → App.jsx 의 Route 가 상세 화면을 그린다 */}
                   <Link to={`/posts/${post.id}`}>{post.title}</Link>
                 </td>
                 <td className="col-writer">{post.writer}</td>
@@ -513,12 +521,15 @@ export default PostFormPage;
 
 ```jsx
 // NotFoundPage.jsx - 없는 주소 ( path="*" )
+//   App.jsx 의 <Route path="*"> 에 연결된다. * 는 "위의 어떤 주소에도 맞지 않으면" 이라는 뜻.
+//   /abc 처럼 없는 주소로 들어오면 빈 화면 대신 이 안내를 보여 준다.
 import { Link } from "react-router";
 
 function NotFoundPage() {
   return (
     <div className="info">
       <h2>404 - 없는 페이지입니다</h2>
+      {/* <a href> 대신 <Link>: 페이지를 새로 받지 않고 React 안에서 주소만 바꾼다 (4장) */}
       <Link to="/">목록으로 가기</Link>
     </div>
   );

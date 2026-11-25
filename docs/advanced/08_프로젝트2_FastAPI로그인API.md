@@ -89,8 +89,8 @@ volumes:
 
 ```powershell
 cd C:\study\authboard
-docker compose up -d      # 심화 DB (react-auth-db). 기초 DB 와 포트가 달라 함께 켜도 된다
-docker compose ps         # healthy 확인
+docker compose up -d      # 심화 DB (react-auth-db) 켜기. 기초 DB 와 포트가 달라 함께 켜도 된다
+docker compose ps         # (healthy) 확인
 ```
 
 `react-auth-db` 가 `(healthy)` 이면 준비 끝. 기초 과정 DB(react-board-db, 5433)와 **동시에 켜 두어도** 포트와 프로젝트 이름이 달라 괜찮다.
@@ -542,7 +542,8 @@ def create_post(body: PostIn, user: CurrentUser): ...
 **[PS]** `C:\study\authboard\backend`, `(.venv)` 가 켜진 터미널
 
 ```powershell
-uvicorn main:app --reload    # 심화 서버도 8000 번 → 기초 서버가 켜져 있으면 먼저 Ctrl+C 로 끈다
+# 심화 서버도 8000 번을 쓴다 → 기초 서버가 켜져 있으면 그 터미널에서 먼저 Ctrl+C 로 끈다
+uvicorn main:app --reload    # C:\study\authboard\backend, (.venv) 가 켜진 터미널에서
 ```
 
 > 기초 과정 API 서버가 아직 8000 번에서 돌고 있다면 먼저 그 터미널에서 **Ctrl+C** 로 끈다. 같은 포트를 두 서버가 쓸 수 없다.

@@ -42,10 +42,12 @@
 **[PS]**
 
 ```powershell
-mkdir C:\study\board -Force     # 게시판 프로젝트 폴더 (이미 있으면 그냥 넘어간다)
+mkdir C:\study\board -Force     # 게시판 프로젝트 폴더 (-Force: 이미 있어도 넘어간다)
 cd C:\study\board
-Copy-Item C:\study\react-fastapi-postgresql\basic\board\docker-compose.yml .            # DB 설정 파일 복사 (마지막 . = 지금 폴더로)
-Copy-Item -Recurse C:\study\react-fastapi-postgresql\basic\board\backend .\backend     # FastAPI 서버 폴더 통째로 복사
+# Copy-Item <원본> <대상> : 파일 복사.  마지막 . = "지금 폴더로"
+Copy-Item C:\study\react-fastapi-postgresql\basic\board\docker-compose.yml .
+# -Recurse : 폴더를 안의 파일까지 통째로 복사한다 (없으면 빈 폴더만 생긴다)
+Copy-Item -Recurse C:\study\react-fastapi-postgresql\basic\board\backend .\backend
 ```
 
 > `Copy-Item 원본 .` 의 마지막 점(`.`)은 "지금 폴더로" 라는 뜻이다.
@@ -102,7 +104,9 @@ volumes:
 **[PS]** `C:\study\board` 에서
 
 ```powershell
-docker compose up -d      # PostgreSQL 컨테이너를 뒤에서(-d) 켠다. 처음에는 이미지를 받느라 1~2분
+# up : docker-compose.yml 에 적힌 DB 컨테이너를 만들고 켠다 (처음에는 postgres 이미지를 받느라 1~2분)
+# -d : 뒤에서(detached) 켜고 프롬프트를 돌려준다. 없으면 DB 로그가 화면을 차지하고, 창을 닫으면 DB 도 꺼진다
+docker compose up -d
 ```
 
 처음에는 `postgres:18` 이미지를 받느라 `Pulling` 줄이 여러 개 나오며 1~2분 걸린다. 끝나면 이렇게 나온다.
@@ -117,7 +121,7 @@ docker compose up -d      # PostgreSQL 컨테이너를 뒤에서(-d) 켠다. 처
 **[PS]** 상태 확인
 
 ```powershell
-docker compose ps         # STATUS 가 healthy 가 될 때까지 몇 번 다시 쳐 본다
+docker compose ps         # 이 compose 파일로 켠 컨테이너 상태. STATUS 가 (healthy) 가 될 때까지 몇 번 다시 쳐 본다
 ```
 
 ```text
@@ -137,9 +141,12 @@ react-board-db   postgres:18   "docker-entrypoint.s…"   db        8 seconds ag
 
 ```powershell
 cd C:\study\board\backend
-python -m venv .venv              # 이 프로젝트 전용 파이썬 환경(.venv 폴더) 만들기 - 처음 한 번만
-.venv\Scripts\Activate.ps1        # 가상 환경 켜기 → 프롬프트 앞에 (.venv) 가 붙는다 (터미널을 새로 열 때마다)
-pip install -r requirements.txt   # FastAPI·uvicorn·psycopg 설치 - 처음 한 번만 (1~2분)
+# python -m venv .venv : 이 프로젝트 전용 파이썬 환경을 .venv 폴더에 만든다 (처음 한 번만)
+#   전용 환경을 쓰면 다른 프로젝트의 라이브러리 버전과 섞이지 않는다
+python -m venv .venv
+.venv\Scripts\Activate.ps1        # 가상 환경 켜기 → 프롬프트 앞에 (.venv) 가 붙는다. 터미널을 새로 열 때마다 다시 친다
+# pip install -r <파일> : 파일에 적힌 라이브러리(FastAPI·uvicorn·psycopg)를 한꺼번에 설치 (처음 한 번만, 1~2분)
+pip install -r requirements.txt
 ```
 
 가상환경이 켜지면 프롬프트 앞에 `(.venv)` 가 붙는다. 설치가 끝나면 마지막에 `Successfully installed ... fastapi-0.162.2 ... psycopg-3.3.8 ...` 같은 줄이 나온다.
@@ -427,7 +434,9 @@ has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is pres
 **[PS]** `(.venv)` 가 붙은 터미널, `C:\study\board\backend` 에서
 
 ```powershell
-uvicorn main:app --reload    # main.py 의 app 을 켠다 → http://localhost:8000 (--reload: 코드를 고치면 저절로 다시 켜짐, 끌 때는 Ctrl+C)
+# uvicorn : FastAPI 앱을 실행하는 웹 서버.  main:app = main.py 파일 안의 app 변수
+# --reload : 코드를 고쳐 저장하면 서버가 저절로 다시 켜진다 (개발할 때만 쓴다)
+uvicorn main:app --reload    # → http://localhost:8000 (끌 때는 Ctrl+C)
 ```
 
 ```text
@@ -477,7 +486,9 @@ INFO:     Application startup complete.
 **[PS]**
 
 ```powershell
-# DB 컨테이너 안의 psql 로 posts 테이블 직접 보기 (화면·API 를 거치지 않고 DB 에 저장된 그대로)
+# docker exec <컨테이너> <명령> : 켜져 있는 DB 컨테이너 안에서 psql(PostgreSQL 명령줄 도구)을 실행한다
+#   -U postgres = 사용자,  -d board = 데이터베이스,  -c "SQL" = 이 SQL 하나만 실행하고 끝
+# 화면·API 를 거치지 않고 DB 에 실제로 저장된 그대로 본다
 docker exec react-board-db psql -U postgres -d board -c "SELECT id, title, writer, created_at FROM posts ORDER BY id;"
 ```
 
@@ -499,9 +510,11 @@ docker exec react-board-db psql -U postgres -d board -c "SELECT id, title, write
 
 ```powershell
 cd C:\study\board
-npm create vite@latest frontend -- --template react --no-interactive   # board 안에 frontend 폴더로 React 프로젝트 만들기
+# npm create vite@latest <폴더> : Vite(React 개발 도구)로 새 프로젝트 뼈대를 만든다
+#   -- 뒤는 Vite 에 넘기는 옵션.  --template react = React 용으로,  --no-interactive = 질문 없이 기본값으로
+npm create vite@latest frontend -- --template react --no-interactive   # → C:\study\board\frontend
 cd frontend
-npm install      # 라이브러리 받기 (1~2분)
+npm install      # package.json 에 적힌 라이브러리(React 등)를 node_modules 폴더로 받는다. 폴더마다 처음 한 번만 (1~2분)
 ```
 
 1장에서처럼 정리한다.

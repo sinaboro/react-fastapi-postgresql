@@ -37,7 +37,9 @@ VS Code 터미널에서 다음을 차례로 친다.
 
 ```powershell
 cd C:\study                # 실습 폴더로
-npm create vite@latest my-react -- --template react --no-interactive   # my-react 폴더에 React 프로젝트 만들기 (질문 없이)
+# npm create vite@latest <폴더> : Vite(React 개발 도구)로 새 프로젝트 뼈대를 만든다
+#   -- 뒤는 Vite 에 넘기는 옵션.  --template react = React 용으로,  --no-interactive = 질문 없이 기본값으로
+npm create vite@latest my-react -- --template react --no-interactive   # → C:\study\my-react 가 생긴다
 ```
 
 | 부분 | 뜻 |
@@ -68,8 +70,8 @@ create-vite v9.3.4
 **[PS]** ② 필요한 패키지 설치 (처음 한 번)
 
 ```powershell
-cd my-react      # 방금 만든 프로젝트 폴더로
-npm install      # package.json 의 라이브러리를 node_modules 로 받는다 (1~2분)
+cd my-react      # 방금 만든 프로젝트 폴더로 (이 폴더 안에서 npm 명령을 쳐야 한다)
+npm install      # package.json 에 적힌 라이브러리(React 등)를 node_modules 폴더로 받는다. 폴더마다 처음 한 번만 (1~2분)
 ```
 
 `npm install` 은 `package.json` 에 적힌 패키지(React, Vite 등)를 인터넷에서 받아 `node_modules` 폴더에 넣는다. 1~2분 걸릴 수 있다.
@@ -77,7 +79,9 @@ npm install      # package.json 의 라이브러리를 node_modules 로 받는�
 **[PS]** ③ 개발 서버 켜기
 
 ```powershell
-npm run dev      # 개발 서버 켜기 → http://localhost:5173 (끌 때는 Ctrl+C)
+# npm run dev : package.json 의 scripts 에 적힌 "dev"(vite) 를 실행 → 개발 서버가 켜진다
+#               코드를 고쳐 저장하면 브라우저가 저절로 바뀐다. 끄기 전까지 이 터미널은 계속 쓰인다 (끌 때는 Ctrl+C)
+npm run dev      # → http://localhost:5173
 ```
 
 ```text
@@ -220,9 +224,9 @@ createRoot(document.getElementById("root")).render(
 **[PS]** 새 터미널(+)을 열고
 
 ```powershell
-cd C:\study\react-fastapi-postgresql\basic\examples   # 교안 예제 모음 앱
-npm install      # 처음 한 번만
-npm run dev      # 5173 이 쓰는 중이면 5174 로 켜진다 (터미널에 나온 주소로 연다)
+cd C:\study\react-fastapi-postgresql\basic\examples   # 교안 예제 모음 앱 (장마다 예제를 메뉴로 골라 본다)
+npm install      # package.json 에 적힌 라이브러리(React 등)를 node_modules 폴더로 받는다. 폴더마다 처음 한 번만 (1~2분)
+npm run dev      # my-react 가 이미 5173 을 쓰고 있으면 5174 로 켜진다 → 터미널에 나온 주소로 연다
 ```
 
 ```text
